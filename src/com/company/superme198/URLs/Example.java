@@ -4,14 +4,12 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import org.jsoup.nodes.*;
 import java.util.Map;
 
 /**
@@ -36,8 +34,6 @@ public class Example {
             nameValue.put(elem.attr("name"), elem.attr("value"));
         }
         nameValue.put("PageHeader1$drpNgonNgu", "E43296C6F24C4410A894F46D57D2D3AB");
-        nameValue.remove("__VIEWSTATE" );
-        nameValue.put("__VIEWSTATE", "/wEPDwUKMTkwNDg4MTQ5MQ9kFgICAQ9kFgpmD2QWCgIBDw8WAh4EVGV4dAUjSOG7jEMgVknhu4ZOIEvhu7ggVEhV4bqsVCBN4bqsVCBNw4NkZAICD2QWAmYPDxYEHwAFDcSQxINuZyBuaOG6rXAeEENhdXNlc1ZhbGlkYXRpb25oZGQCAw8QDxYGHg1EYXRhVGV4dEZpZWxkBQZreWhpZXUeDkRhdGFWYWx1ZUZpZWxkBQJJRB4LXyFEYXRhQm91bmRnZBAVAgJWTgJFThUCIEU0MzI5NkM2RjI0QzQ0MTBBODk0RjQ2RDU3RDJEM0FCIEFCQUY0NkJENjcxMjQ3QzVCNUI1Mjg4NUJCMkY5QzQ5FCsDAmdnFgFmZAIEDw8WAh4ISW1hZ2VVcmwFKC9DTUNTb2Z0LklVLldlYi5JbmZvL0ltYWdlcy9Vc2VySW5mby5naWZkZAIFD2QWBgIBDw8WAh8ABQZLaMOhY2hkZAIDDw8WAh8AZWRkAgcPDxYCHgdWaXNpYmxlaGRkAgIPZBYEAgMPD2QWAh4Gb25ibHVyBQptZDUodGhpcyk7ZAIHDw8WAh8AZWRkAgQPDxYCHwZoZGQCBg8PFgIfBmhkFgYCAQ8PZBYCHwcFCm1kNSh0aGlzKTtkAgUPD2QWAh8HBQptZDUodGhpcyk7ZAIJDw9kFgIfBwUKbWQ1KHRoaXMpO2QCCw9kFghmDw8WAh8AZWRkAgEPZBYCZg8PFgIfAWhkZAICD2QWAmYPDxYEHwAFDcSQxINuZyBuaOG6rXAfAWhkZAIDDw8WAh8ABbQFPGEgaHJlZj0iIyIgb25jbGljaz0iamF2YXNjcmlwdDp3aW5kb3cucHJpbnQoKSI+PGRpdiBzdHlsZT0iRkxPQVQ6bGVmdCI+CTxpbWcgc3JjPSIvQ01DU29mdC5JVS5XZWIuSW5mby9pbWFnZXMvcHJpbnQucG5nIiBib3JkZXI9IjAiPjwvZGl2PjxkaXYgc3R5bGU9IkZMT0FUOmxlZnQ7UEFERElORy1UT1A6NnB4Ij5JbiB0cmFuZyBuw6B5PC9kaXY+PC9hPjxhIGhyZWY9Im1haWx0bzo/c3ViamVjdD1IZSB0aG9uZyB0aG9uZyB0aW4gSVUmYW1wO2JvZHk9aHR0cDovLzExNS4xNDYuMTI3LjcyL0NNQ1NvZnQuSVUuV2ViLkluZm8vTG9naW4uYXNweCI+PGRpdiBzdHlsZT0iRkxPQVQ6bGVmdCI+PGltZyBzcmM9Ii9DTUNTb2Z0LklVLldlYi5JbmZvL2ltYWdlcy9zZW5kZW1haWwucG5nIiAgYm9yZGVyPSIwIj48L2Rpdj48ZGl2IHN0eWxlPSJGTE9BVDpsZWZ0O1BBRERJTkctVE9QOjZweCI+R+G7rWkgZW1haWwgdHJhbmcgbsOgeTwvZGl2PjwvYT48YSBocmVmPSIjIiBvbmNsaWNrPSJqYXZhc2NyaXB0OmFkZGZhdigpIj48ZGl2IHN0eWxlPSJGTE9BVDpsZWZ0Ij48aW1nIHNyYz0iL0NNQ1NvZnQuSVUuV2ViLkluZm8vaW1hZ2VzL2FkZHRvZmF2b3JpdGVzLnBuZyIgIGJvcmRlcj0iMCI+PC9kaXY+PGRpdiBzdHlsZT0iRkxPQVQ6bGVmdDtQQURESU5HLVRPUDo2cHgiPlRow6ptIHbDoG8gxrBhIHRow61jaDwvZGl2PjwvYT5kZGSNO8zl44N2nvW90EGlBOHRyNqvRHAOfnnU9hfkqJVVUQ==");
         loginForm =  Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Login.aspx")
                 .data("txtUserName", "CT010338")
                 .data("txtPassword", md5("03031998"))
@@ -47,6 +43,23 @@ public class Example {
                 .method(Connection.Method.POST)
                 .execute();
        showStudentMark(loginForm);
+    }
+
+    public static void showStudentMarkWithTerm(Connection.Response loginForm) throws IOException {
+        Map<String, String> cookies = loginForm.cookies();
+        Document document2 = Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.info/StudentMark.aspx")
+                .cookies(cookies)
+                .get();
+        Elements hiddenElems = document2.select("input[type=hidden]");
+        Map<String, String> nameValue = new HashMap<>();
+
+        for(Element elem : hiddenElems) {
+            nameValue.put(elem.attr("name"), elem.attr("value"));
+        }
+        nameValue.put("PageHeader1$drpNgonNgu", "E43296C6F24C4410A894F46D57D2D3AB");
+        nameValue.remove("__EVENTTARGET");
+        nameValue.put("__EVENTTARGET", "drpHK");
+        nameValue.put("drpHK", "2017_2018_1");
     }
 
     public static void showStudentMark(Connection.Response loginForm) throws IOException {
@@ -72,24 +85,55 @@ public class Example {
 //
 //        }
 
-        Elements tableSumMark = document2.select("table#tblSumMark.tableborder table#grdResult");
+//        Elements tableSumMark = document2.select("table#tblSumMark.tableborder table#grdResult");
+//        for (Element e:
+//            tableSumMark) {
+//            String value = e.select("tr td.cssListHeader").text();
+//            System.out.println(value);
+//            Elements result = e.select("tr.cssListItem");
+//            for (Element res:
+//                result ) {
+//                Elements r = res.select("td");
+//                System.out.println("size :" + r.size());
+//                for (Element element : r) {
+//                    System.out.print(element.text() + " ");
+//                }
+//                System.out.println();
+//
+//            }
+//    }
+
+        Elements tableSumMark = document2.select("table#tblSumMark.tableborder table#grdResult tbody");
         for (Element e:
             tableSumMark) {
-            String value = e.select("tr td.cssListHeader").text();
-            System.out.println(value);
-            Elements result = e.select("tr.cssListItem");
+            Elements result = e.select("tr");
             for (Element res:
                 result ) {
                 Elements r = res.select("td");
-                System.out.println("size :" + r.size());
                 for (Element element : r) {
                     System.out.print(element.text() + " ");
                 }
                 System.out.println();
 
             }
-
         }
+
+        Elements tableSumMarkDetails = document2.select("table#tblStudentMark tbody");
+        for (Element e:
+                tableSumMarkDetails) {
+            Elements result = e.select("tr");
+            for (Element res:
+                    result ) {
+                Elements r = res.select("td");
+                for (Element element : r) {
+                    System.out.print(element.text() + " ");
+                }
+                System.out.println();
+
+            }
+        }
+
+
     }
 
     public static void login() throws IOException {
