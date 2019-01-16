@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +21,10 @@ import java.util.Map;
 
 /**md5:https://www.mkyong.com/java/java-md5-hashing-example/
  * Unable to parse website after successful log in JSoup:
- * https://stackoverflow.com/questions/29183108/unable-to-parse-website-after-successful-log-in-jsoup*/
+ * https://stackoverflow.com/questions/29183108/unable-to-parse-website-after-successful-log-in-jsoup
+ *
+ * https://stackoverflow.com/questions/36235797/best-way-to-compare-localdates?noredirect=1&lq=1
+ * https://stackoverflow.com/questions/32904886/java-util-date-calculate-difference-in-days*/
 public class Example {
 
     public static void main(String...args) throws IOException, NoSuchAlgorithmException {
@@ -42,9 +48,178 @@ public class Example {
                 .cookies(loginForm.cookies())
                 .method(Connection.Method.POST)
                 .execute();
-       showStudentMark(loginForm);
+       //showStudentMark(loginForm);
+
+        //showStudentTimeTable(loginForm);
+        //showDate();
+//        String test = "Từ 07/01/2019 đến 27/01/2019: (1) Thứ 6 tiết 4,5,6 (LT) Từ 11/02/2019 đến 24/03/2019: (2) Thứ 6 tiết 4,5,6 (LT) Từ 25/03/2019 đến 31/03/2019: (3) Thứ 4 tiết 4,5,6 (LT) Thứ 6 tiết 4,5,6 (LT)";
+//        for(String s: test.split("Từ")){
+//            System.out.println(s);
+//        }
+
+        LocalDate localDate = LocalDate.of(2019, Month.JANUARY, 7);
+        LocalDate localDate1= LocalDate.of(2019, Month.JANUARY, 27);
+        System.out.println(ChronoUnit.DAYS.between(localDate, localDate1));
     }
 
+
+    static class Details{
+        String time = "";
+        String date = "";
+        String details = "";
+        String subjectName;
+        String teacher;
+        String shortenedSubjectName;
+        String place;
+        public Details(){}
+        public Details(String date, String time){
+            this.date = date;
+            this.time = time;
+        }
+
+        public String getPlace() {
+            return place;
+        }
+
+        public void setPlace(String place) {
+            this.place = place;
+        }
+
+        public String getShortenedSubjectName() {
+            return shortenedSubjectName;
+        }
+
+        public void setShortenedSubjectName(String shortenedSubjectName) {
+            this.shortenedSubjectName = shortenedSubjectName;
+        }
+
+        public String getSubjectName() {
+            return subjectName;
+        }
+
+        public void setSubjectName(String subjectName) {
+            this.subjectName = subjectName;
+        }
+
+        public String getTeacher() {
+            return teacher;
+        }
+
+        public void setTeacher(String teacher) {
+            this.teacher = teacher;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public String getDetails() {
+            return details;
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+        }
+    }
+
+    private static void showDate(){
+
+        LocalDate localDate = LocalDate.of(2019, Month.JANUARY, 1);
+        System.out.println(localDate.lengthOfMonth());//the length of Month.
+        int lengthOfMonth = localDate.lengthOfMonth();
+
+        Details[][] detailsOfMonday = new Details[11][6];
+        Details[][] detailsOfTuesday = new Details[11][6];
+        Details[][] detailsOfWednesday = new Details[11][6];
+        Details[][] detailsOfThursday = new Details[11][6];
+        Details[][] detailsOfFriday = new Details[11][6];
+
+        //init Date.
+        initDateToDetails(localDate, DayOfWeek.MONDAY , detailsOfMonday, lengthOfMonth);
+        initDateToDetails(localDate, DayOfWeek.TUESDAY , detailsOfTuesday, lengthOfMonth);
+        initDateToDetails(localDate, DayOfWeek.WEDNESDAY , detailsOfWednesday, lengthOfMonth);
+        initDateToDetails(localDate, DayOfWeek.THURSDAY , detailsOfThursday, lengthOfMonth);
+        initDateToDetails(localDate, DayOfWeek.FRIDAY , detailsOfFriday, lengthOfMonth);
+
+        //init Time.
+        initTimeToDetails(detailsOfMonday);
+        initTimeToDetails(detailsOfTuesday);
+        initTimeToDetails(detailsOfWednesday);
+        initTimeToDetails(detailsOfThursday);
+        initTimeToDetails(detailsOfFriday);
+
+        System.out.println(detailsOfTuesday[0][4].getDate());
+
+//        YearMonth dateY = YearMonth.now();
+//        System.out.printf("%s: %d%n", dateY, dateY.lengthOfMonth());
+//        MonthDay month = MonthDay.now();
+//        System.out.println("Month:" + month.getDayOfMonth());
+//        Instant timestamp = new Date().toInstant();
+//        LocalDateTime date = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault());
+//        System.out.println(date);
+//        System.out.println( date.with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
+    }
+
+    private static void initDateToDetails(LocalDate localDate, DayOfWeek dayOfWeek, Details[][] details, int lengthOfMonth){
+        int firstDayOfMonth = localDate.with(TemporalAdjusters.firstInMonth(dayOfWeek)).getDayOfMonth();
+        int i =firstDayOfMonth % 7==0?2:1;
+        while ((firstDayOfMonth) <= lengthOfMonth){
+            details[0][i++] = new Details( firstDayOfMonth+ "/" +localDate.getMonth().getValue(), "");
+            firstDayOfMonth += 7;
+        }
+    }
+
+    private static void initTimeToDetails(Details[][] details){
+        details[0][0] = new Details("", "Ngay");
+        details[0][1] = new Details("", "1-2");
+        details[0][2] = new Details("", "3");
+        details[0][3] = new Details("", "4-5");
+        details[0][4] = new Details("", "6");
+        details[0][5] = new Details("", "7-8");
+        details[0][6] = new Details("", "9");
+        details[0][7] = new Details("", "10-11");
+        details[0][8] = new Details("", "12");
+        details[0][9] = new Details("", "13-14");
+        details[0][10] = new Details("", "15-16");
+    }
+
+    public static void showStudentTimeTable(Connection.Response loginForm) throws IOException {
+        Map<String, String> cookies = loginForm.cookies();
+        Document document = Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Reports/Form/StudentTimeTable.aspx")
+                .cookies(cookies)
+                .get();
+//        Elements titleTimeTable = document.select("table#gridRegistered tbody tr.DataGridFixedHeader");
+//        for(Element e: titleTimeTable){
+//            Elements result = e.select("td");
+//                for (Element element : result) {
+//                    System.out.print(element.text() + " ");
+//                }
+//                System.out.println();
+//
+//        }
+        Elements titleTimeTable = document.select("table#gridRegistered tbody tr.cssListItem");
+        for(Element e: titleTimeTable){
+            Elements result = e.select("td");
+            for (Element element : result) {
+                System.out.print(element.text() + "+");
+            }
+            System.out.println();
+
+        }
+
+    }
     public static void showStudentMarkWithTerm(Connection.Response loginForm) throws IOException {
         Map<String, String> cookies = loginForm.cookies();
         Document document2 = Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.info/StudentMark.aspx")
