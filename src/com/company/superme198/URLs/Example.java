@@ -10,10 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by traig on 7:24 PM, 12/21/2018
@@ -24,43 +24,81 @@ import java.util.Map;
  * https://stackoverflow.com/questions/29183108/unable-to-parse-website-after-successful-log-in-jsoup
  *
  * https://stackoverflow.com/questions/36235797/best-way-to-compare-localdates?noredirect=1&lq=1
- * https://stackoverflow.com/questions/32904886/java-util-date-calculate-difference-in-days*/
+ * https://stackoverflow.com/questions/32904886/java-util-date-calculate-difference-in-days
+ * convert string to localdate:https://www.mkyong.com/java8/java-8-how-to-convert-string-to-localdate/*/
 public class Example {
 
-    public static void main(String...args) throws IOException, NoSuchAlgorithmException {
+    public static void main(String...args) {
 
-        Connection.Response loginForm = Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Login.aspx")
-                .method(Connection.Method.GET)
-                .execute();
-        Document doc = loginForm.parse();
-        Elements hiddenElems = doc.select("input[type=hidden]");
-        Map<String, String> nameValue = new HashMap<>();
-
-        for(Element elem : hiddenElems) {
-            nameValue.put(elem.attr("name"), elem.attr("value"));
-        }
-        nameValue.put("PageHeader1$drpNgonNgu", "E43296C6F24C4410A894F46D57D2D3AB");
-        loginForm =  Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Login.aspx")
-                .data("txtUserName", "CT010338")
-                .data("txtPassword", md5("03031998"))
-                .data(nameValue)
-                .data("btnSubmit", "Đăng nhập")
-                .cookies(loginForm.cookies())
-                .method(Connection.Method.POST)
-                .execute();
-       //showStudentMark(loginForm);
-
-        //showStudentTimeTable(loginForm);
-        //showDate();
-//        String test = "Từ 07/01/2019 đến 27/01/2019: (1) Thứ 6 tiết 4,5,6 (LT) Từ 11/02/2019 đến 24/03/2019: (2) Thứ 6 tiết 4,5,6 (LT) Từ 25/03/2019 đến 31/03/2019: (3) Thứ 4 tiết 4,5,6 (LT) Thứ 6 tiết 4,5,6 (LT)";
-//        for(String s: test.split("Từ")){
-//            System.out.println(s);
+//        Connection.Response loginForm = Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Login.aspx")
+//                .method(Connection.Method.GET)
+//                .execute();
+//        Document doc = loginForm.parse();
+//        Elements hiddenElems = doc.select("input[type=hidden]");
+//        Map<String, String> nameValue = new HashMap<>();
+//
+//        for(Element elem : hiddenElems) {
+//            nameValue.put(elem.attr("name"), elem.attr("value"));
 //        }
+//        nameValue.put("PageHeader1$drpNgonNgu", "E43296C6F24C4410A894F46D57D2D3AB");
+//        loginForm =  Jsoup.connect("http://115.146.127.72/CMCSoft.IU.Web.Info/Login.aspx")
+//                .data("txtUserName", "CT010338")
+//                .data("txtPassword", md5("03031998"))
+//                .data(nameValue)
+//                .data("btnSubmit", "Đăng nhập")
+//                .cookies(loginForm.cookies())
+//                .method(Connection.Method.POST)
+//                .execute();
+//       //showStudentMark(loginForm);
+//
+//        //showStudentTimeTable(loginForm);
+//        //showDate();
+////        String test = "Từ 07/01/2019 đến 27/01/2019: (1) Thứ 6 tiết 4,5,6 (LT) Từ 11/02/2019 đến 24/03/2019: (2) Thứ 6 tiết 4,5,6 (LT) Từ 25/03/2019 đến 31/03/2019: (3) Thứ 4 tiết 4,5,6 (LT) Thứ 6 tiết 4,5,6 (LT)";
+////        for(String s: test.split("Từ")){
+////            System.out.println(s);
+////        }
+//
+//
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        //convert String to LocalDate
+        LocalDate localDate2 = LocalDate.parse("27/01/2019", formatter);
+        System.out.println(localDate2);
+        LocalDate startDate = LocalDate.of(2019, Month.JANUARY, 7);
+        LocalDate endDate= LocalDate.of(2019, Month.JANUARY, 27);
+        //distance between two dates.
+        //System.out.println(ChronoUnit.DAYS.between(startDate, endDate));
 
-        LocalDate localDate = LocalDate.of(2019, Month.JANUARY, 7);
-        LocalDate localDate1= LocalDate.of(2019, Month.JANUARY, 27);
-        System.out.println(ChronoUnit.DAYS.between(localDate, localDate1));
+        //thu 2 va thu 4
+
+
+
+      //  showDate();
+//        System.out.println(binomialCoefficient(29, 20));
+
     }
+
+    static boolean compareTo(LocalDate start, LocalDate end){
+        return start.getDayOfMonth() <= end.getDayOfMonth() &&
+                start.getMonthValue() <= end.getMonthValue();
+    }
+
+static long binomialCoefficient(int n, int k) {
+    long fact =1, fact1 =1, factN =1 ;
+    for(int i =2; i<=n ;i++){
+        if(fact1 * fact > Long.MAX_VALUE){
+            return -1;
+        }
+        if(i<= k){
+            fact *=i;
+        }
+        if(i <= (n-k)){
+            fact1 *= i;
+        }
+        factN *= i;
+    }
+    return (factN)/ (fact1* fact);
+}
+
 
 
     static class Details{
@@ -72,7 +110,7 @@ public class Example {
         String shortenedSubjectName;
         String place;
         public Details(){}
-        public Details(String date, String time){
+        Details(String date, String time){
             this.date = date;
             this.time = time;
         }
@@ -117,7 +155,7 @@ public class Example {
             this.time = time;
         }
 
-        public String getDate() {
+        String getDate() {
             return date;
         }
 
@@ -160,7 +198,7 @@ public class Example {
         initTimeToDetails(detailsOfThursday);
         initTimeToDetails(detailsOfFriday);
 
-        System.out.println(detailsOfTuesday[0][4].getDate());
+        System.out.println(detailsOfMonday[0][4].getDate());
 
 //        YearMonth dateY = YearMonth.now();
 //        System.out.printf("%s: %d%n", dateY, dateY.lengthOfMonth());
@@ -174,7 +212,7 @@ public class Example {
 
     private static void initDateToDetails(LocalDate localDate, DayOfWeek dayOfWeek, Details[][] details, int lengthOfMonth){
         int firstDayOfMonth = localDate.with(TemporalAdjusters.firstInMonth(dayOfWeek)).getDayOfMonth();
-        int i =firstDayOfMonth % 7==0?2:1;
+        int i =firstDayOfMonth % 7==0 ? 2:1;
         while ((firstDayOfMonth) <= lengthOfMonth){
             details[0][i++] = new Details( firstDayOfMonth+ "/" +localDate.getMonth().getValue(), "");
             firstDayOfMonth += 7;
@@ -182,17 +220,17 @@ public class Example {
     }
 
     private static void initTimeToDetails(Details[][] details){
-        details[0][0] = new Details("", "Ngay");
-        details[0][1] = new Details("", "1-2");
-        details[0][2] = new Details("", "3");
-        details[0][3] = new Details("", "4-5");
-        details[0][4] = new Details("", "6");
-        details[0][5] = new Details("", "7-8");
-        details[0][6] = new Details("", "9");
-        details[0][7] = new Details("", "10-11");
-        details[0][8] = new Details("", "12");
-        details[0][9] = new Details("", "13-14");
-        details[0][10] = new Details("", "15-16");
+        details[0][0]= new Details("", "Ngay");
+        details[1][0]= new Details("", "1-2");
+        details[2][0]= new Details("", "3");
+        details[3][0]= new Details("", "4-5");
+        details[4][0]= new Details("", "6");
+        details[5][0]= new Details("", "7-8");
+        details[6][0]= new Details("", "9");
+        details[7][0]= new Details("", "10-11");
+        details[8][0]= new Details("", "12");
+        details[9][0]= new Details("", "13-14");
+        details[10][0] = new Details("", "15-16");
     }
 
     public static void showStudentTimeTable(Connection.Response loginForm) throws IOException {
